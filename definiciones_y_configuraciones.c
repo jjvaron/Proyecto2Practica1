@@ -26,3 +26,22 @@ int8_t convierta_a_Celsius(short temp_value)
 	/* f(x) = (raw_value - offset) / coeff */
   return int8_t ((temp_value - 324.31)/1.22);
 }
+int8_t obtenerUnidades(int8_t val)
+{
+    int8_t modulo;
+	if(val > 0){
+		
+		modulo = val % 10; /*extraer unidades*/
+	}
+	return modulo;
+}
+int8_t obtenerDecenas(int8_t val)
+{
+    int8_t modulo; 
+	if(val > 0){
+		modulo = val % 10; 
+		val = val/10;
+		modulo = val % 10;/*extraer decenas*/
+	}
+	return val;
+}
