@@ -25,7 +25,9 @@ if(Tm_Hubo_periodico (&sondeoADC))// condicion de ADC
             Tm_Baje_periodico (&sondeoADC);//reset de condicion ADC
             adcval = leaADC(); /*lectura ADC*/
 	    temperatura = convierta_a_Celsius(adcval); /*conversión del valor a celsius*/
-            DyC_Procese_ADC(&temperatura,&tempUnidades,&tempDecenas);
+            tempUnidades = obtenerUnidades(temperatura);
+	    tempDecenas = obtenerDecenas(temperatura);
+	    DyC_Procese_ADC(&temperatura,&tempUnidades,&tempDecenas);
         }
 
   if(Tm_Hubo_periodico (&sondeoDisplay))// condicion de Display entra cada
