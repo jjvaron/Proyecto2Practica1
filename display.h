@@ -12,11 +12,11 @@ typedef struct D_Display D_Display;
 
 /*el transistor que habilita el display de unidades esta en el puerto B bit 2*/
 #define PUERTODISPUNIDADES PORTB
-#define TRANDISPUNIDADES 0b00000100
+#define TRANDISPUNIDADES 0b10000000
 
 /*el transistor que habilita el display de unidades esta en el puerto C bit 5*/
 #define PUERTOBDISPDECENAS PORTC
-#define TRANDISPDECENAS 0b00100000
+#define TRANDISPDECENAS 0b10000000
 
 struct D_Display
 {

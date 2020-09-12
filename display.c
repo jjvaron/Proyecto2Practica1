@@ -1,4 +1,5 @@
 
+#include "display.h"
 
 void D_inicie_display (D_Display *disp,int8_t *tempUnidades,int8_t *tempDecenas)
 {
@@ -27,16 +28,18 @@ void D_Procese_display (D_Display *disp)
 
 void muestre_en_display(uint8_t digito  , uint8_t display )
 {
-    /*configura el puerto o los puertos que esten usando para si display*/
+    /*configura el puerto o los puertos que esten usando para los display*/
+	DDRD = 0b01111111; //Se establecen los pines de salida del puerto D
+	DDRB = 0b01111111; //Se establecen los pines de salida del puerto B
 
     /*primero bajar todos los bits del display en el puerto*/
-    PORTA=;
+    PORTB &= 0b00000000;
     /*subir solo los necesarios*/
-
-    /*primero bafar todos los bits del display en el puerto*/
-    PORTA=;
+	PORTB |= 0b01111111;
+    /*primero bajar todos los bits del display en el puerto*/
+    PORTD &= 0b00000000;
     /*subir solo los necesarios*/
-
+	PORTD |= 0b01111111;
     /*y dependiendo del valor de display enciende el transistor correspondiente*/
     if(display==UNIDADES){
         PUERTOBDISPDECENAS &= ~TRANDISPDECENAS;
