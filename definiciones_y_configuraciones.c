@@ -4,7 +4,7 @@
 void resetADC(void)
 {
 	ADCSRA = 0x00;
-	ADMUX = 0x00;
+	ADMUX  = 0x00;
 }
 
 void DyC_Procese_ADC(int8_t *temperatura,int8_t *tempUnidades,int8_t *tempDecenas)
