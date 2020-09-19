@@ -1,4 +1,3 @@
-
 #include "display.h"
 
 void D_inicie_display (D_Display *disp,int8_t *tempUnidades,int8_t *tempDecenas)
@@ -21,7 +20,7 @@ void D_Procese_display (D_Display *disp)
         case DECENAS://mostrar decenas
             disp->mostrando=UNIDADES;// cambiar estado
             muestre_en_display(*disp->tempDecenas,DECENAS );
-        default:
+        default: // Para que regrese a un estado e caso de error. Idealmente no deberia llegar a acá
             disp->mostrando=DECENAS;
     }
 }
@@ -43,11 +42,11 @@ void muestre_en_display(uint8_t digito  , uint8_t display )
     /*y dependiendo del valor de display enciende el transistor correspondiente*/
     if(display==UNIDADES){
         PUERTOBDISPDECENAS &= ~TRANDISPDECENAS;
-        PUERTODISPUNIDADES |= TRANDISPUNIDADES;
+        PUERTODISPUNIDADES |=  TRANDISPUNIDADES;
     }
     if(display==DECENAS){
         PUERTODISPUNIDADES &= ~TRANDISPUNIDADES;
-        PUERTOBDISPDECENAS |= TRANDISPDECENAS;
+        PUERTOBDISPDECENAS |=  TRANDISPDECENAS;
     }
 }
 /*
@@ -56,6 +55,8 @@ void muestre_en_display(uint8_t digito  , uint8_t display )
 f | g_  | b
 e |  _  | c
      d
+Catodo comun = Se enciende con un 1
+Anodo comun = se enciende con un 0
 anodo o catodo?? prende con 1 o con 0??? prende con 1
 0b00111111  // muestro un 0
 0b00000110  // muestro un 1
@@ -70,7 +71,7 @@ anodo o catodo?? prende con 1 o con 0??? prende con 1
 0b01000000 // signo menos
 0b01111001 // Error
 */
-tablaBCD[12]={0b0011111,
+tablaBCD[12]={0b00111111,
               0b00000110,
               0b01001011,
               0b01001111,
