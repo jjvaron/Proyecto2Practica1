@@ -1,4 +1,3 @@
-
 #if !defined(DISPLAY_H)
 #define DISPLAY_H
 #ifdef __cplusplus
@@ -7,8 +6,8 @@ extern "C" {
 //#include <stddef.h>
 typedef struct D_Display D_Display;
 
-+#define UNIDADES 1// si e estado esta en este muestro unidades
-#define DECENAS  2// si el estado esta en este muestro decenas
+#define UNIDADES  1 // si el estado esta en este muestro unidades
+#define DECENAS   2 // si el estado esta en este muestro decenas
 
 /*el transistor que habilita el display de unidades esta en el puerto B bit 2*/
 #define PUERTODISPUNIDADES PORTB
@@ -22,12 +21,12 @@ struct D_Display
 {
     int8_t *tempUnidades;
     int8_t *tempDecenas;
-    int8_t mostrando;
+    int8_t mostrando; // Valor de la conmutación
 };
 
 //funciones para  procesar tiempo
 //funciones para  procesar display
-void D_Procese_display (D_Display *disp);
+void D_Procese_display (D_Display *disp); // Evaluamos en que estado estamos
 
 
 //funciones de  display
@@ -35,7 +34,7 @@ void D_inicie_display (D_Display *disp,int8_t *tempUnidades,int8_t *tempDecenas)
 void D_apague_display (D_Display *disp);
 
 //lector de tabla de lookup entra numero sale en BCD
-int8_t num2BCD(int8_t num);
+int8_t num2BCD(int8_t num); 
 
 
 
