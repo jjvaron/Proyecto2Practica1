@@ -1,36 +1,70 @@
-#if !defined(TIEMPO_H)
-#define TIEMPO_H
-#ifdef __cplusplus
-extern "C" {
-#endif
-//#include <stddef.h>
-typedef struct Tm_Periodico Tm_Periodico;
-#define TM_PER_B_ACTIVO		0x01U
-#define TM_PER_B_TC			0x02U
-#define TM_Out_B_TC			0x04U
-struct Tm_Periodico
+#include "nuestrostimers.h"
+// struct Tm_Periodico
+// {
+// unsigned int	contador,
+// periodo;
+
+//unsigned int	timeout;
+// unsigned char banderas;
+// };
+
+void Tm_Inicie_periodico (Tm_Periodico *ctp,unsigned int periodo)
 {
-	unsigned int	contador,// van los conteos temporales por timer multiplo
-	periodo;//hasta donde quiero contar
-	unsigned long	timeout;//ac� va un timeout
-	unsigned char banderas; //el primer bit me dice si est� activo este timer el segundo me dice si se da periodo
-};
-
-//funciones para  procesar tiempo
-void Tm_Procese_tiempo (Tm_Periodico *ctp);
-
-
-//funciones de tiempos periodicos para timers
-void Tm_Inicie_periodico (Tm_Periodico *ctp,unsigned int periodo);
-char Tm_Hubo_periodico (Tm_Periodico *ctp);
-void Tm_Baje_periodico (Tm_Periodico *ctp);
-void Tm_Termine_periodico (Tm_Periodico *ctp);
-
-//funciones de timeout
-void Tm_Inicie_timeout (Tm_Periodico *ctp,unsigned int tiempo);
-char Tm_Hubo_timeout (Tm_Periodico *ctp);
-void Tm_Baje_timeout (Tm_Periodico *ctp);
-#ifdef __cplusplus
-} // extern "C"
-#endif
-#endif
+	ctp->banderas |= TM_PER_B_ACTIVO; //activo el timer
+	ctp->banderas &= ~TM_PER_B_TC; //bajo la bandera a 0
+	ctp->contador = ctp->periodo = periodo;//tanto el contador y el periodo inician en el mismo valor el contator decrece y el periodo se usa para reset
+}
+void Tm_Procese_tiempo (Tm_Periodico *ctp)
+{
+//	Timeout *tp;
+//	size_t n;
+	if (ctp->banderas & TM_PER_B_ACTIVO)//si el timer est� activo
+	{
+		--(ctp->contador);//decremente en uno
+		if ( !(ctp->contador) )//si lleg� a cero
+		{
+			ctp->banderas |= TM_PER_B_TC;//subo la bandera
+			ctp->contador = ctp->periodo;// lo reseteo
+		}
+	}
+	if ((ctp->timeout))//si ya es cero, no entra
+			ctp->timeout=ctp->timeout-1;//decremente tambi�n el timeout
+}
+char Tm_Hubo_periodico (Tm_Periodico *ctp) //le ingreso la estructura
+{
+	return (ctp->banderas & TM_PER_B_TC);//activo la bandera cuando hubo periodo
+}
+void Tm_Baje_periodico (Tm_Periodico *ctp)  //envio la estructura
+{
+	ctp->banderas &= ~TM_PER_B_TC; //atiendo la bandera una vez hubo periodo
+}
+void Tm_Termine_periodico (Tm_Periodico *ctp)  //envio la estructura
+{
+	ctp->banderas &= ~TM_PER_B_ACTIVO; //desactivo el timer una vez no lo necesito
+}
+char Tm_Hubo_timeout (Tm_Periodico *ctp)  //revise si hubo timeout
+{
+	if((ctp->timeout == 0) && (ctp->banderas &= TM_PER_B_ACTIVO)) //compararlo con 0
+	{
+	ctp->banderas &=~TM_PER_B_ACTIVO;
+	ctp->banderas &= TM_Out_B_TC;  //bajo la bandera de timeout
+	return 1; //si es 0 retorne 1
+	}
+	else
+	{
+	return 0;	//si no retorne 0
+	}
+}
+void Tm_Inicie_timeout (Tm_Periodico *ctp,unsigned int tiempo)
+{
+	////la mascara de la bandera se crea en el tiempo.h
+	//puede tomar el mismo valor de la mascara de periodicos
+	ctp->banderas |=TM_PER_B_ACTIVO;
+	ctp->banderas &= ~TM_Out_B_TC;  //bajo la bandera de timeout
+	ctp->timeout = tiempo; //inicio el contador en el numero de conteos deseado
+}
+void Tm_Baje_timeout (Tm_Periodico *ctp)  //envio la estructura
+{
+	ctp->banderas &= ~TM_Out_B_TC; //atiendo la bandera una vez hubo periodo
+	ctp->banderas &=~TM_PER_B_ACTIVO;
+}
