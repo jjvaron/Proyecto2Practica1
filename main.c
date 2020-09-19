@@ -5,7 +5,7 @@
  * Author : HewlettPackard
  */ 
 
-/???????????? LIBRERIAS ????????????/
+/*???????????? LIBRERIAS ????????????*/
 #include <avr/io.h>
 #include <stdlib.h>
 
@@ -16,14 +16,14 @@
 // En nuestra implementacion esta deberia ser un global
 // si vamos a trabajar por interrupción o deberia estar en el
 // espacio de memoria del main.
-int8_t temperatura;//ya va a estar en celsius
-int8_t tempUnidades;//vamos a guardar el BCD de unidades
-int8_t tempDecenas;//vamos a guardar el BCD de decenas
+int8_t temperatura;  //ya va a estar en celsius
+int8_t tempUnidades; //vamos a guardar el BCD de unidades
+int8_t tempDecenas;  //vamos a guardar el BCD de decenas
 
 Tm_Periodico sondeoADC,sondeoDisplay,baseTiempo;
-Tm_Inicie_periodico (&sondeoADC,TIEMPOADC);// iniciar periodico de ADC
-Tm_Inicie_periodico (&sondeoDisplay,TIEMPODISPLAY);// iniciar periodico de Display
-Tm_Inicie_periodico (&baseTiempo,TIEMPOBASE);// iniciar periodico de ADC
+Tm_Inicie_periodico (&sondeoADC,TIEMPOADC);         // iniciar periodico de ADC
+Tm_Inicie_periodico (&sondeoDisplay,TIEMPODISPLAY); // iniciar periodico de Display
+Tm_Inicie_periodico (&baseTiempo,TIEMPOBASE);       // iniciar periodico de ADC
 
 void main (void)
 {
@@ -38,14 +38,15 @@ void main (void)
 		if(Tm_Hubo_periodico (&sondeoADC))// condicion de ADC
 		{
 			Tm_Baje_periodico (&sondeoADC);//reset de condicion ADC
-			DyC_Procese_ADC(&temperatura,&tempUnidades,&tempDecenas);
+			// Aquí se lee el ADC y se convierte el valor leido a grados y unidades y decenas para el display
+			DyC_Procese_ADC(&temperatura,&tempUnidades,&tempDecenas); // En definiciones y configuraciones
 		}
 
 		if(Tm_Hubo_periodico (&sondeoDisplay))// condicion de Display entra cada TIEMPODISPLAY 10 milisegundos
 		
 		{ 
 			Tm_Baje_periodico (&sondeoDisplay);//reset de condicion
-			DyC_Procese_Display(&tempUnidades,&tempDecenas);
+			D_Procese_display(&tempUnidades,&tempDecenas);
 		}
 	} /*for*/
 } /*main*/
